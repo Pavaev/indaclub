@@ -1,13 +1,17 @@
-from abc import ABCMeta, abstractclassmethod
+from abc import ABCMeta, abstractmethod
 
 
 class SimpleCommand(metaclass=ABCMeta):
-    @abstractclassmethod
-    def __call__(cls):
+
+    @staticmethod
+    @abstractmethod
+    def __call__():
         raise NotImplementedError()
 
 
 class Command(metaclass=ABCMeta):
-    @abstractclassmethod
-    def __call__(cls, *args):
+
+    @staticmethod
+    @abstractmethod
+    def __call__(*args):
         raise NotImplementedError()
