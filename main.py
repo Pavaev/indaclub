@@ -1,5 +1,5 @@
 from app.command import CommandFactory
-from core.constants import CommandName
+from app.constants import CommandName
 from core.exceptions import IncorrectCommand
 
 

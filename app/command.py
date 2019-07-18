@@ -1,10 +1,10 @@
 import sys
 
 from core.command import Command
-from core.constants import CommandName, Style
-from core.dummydb import get_club
+from app.constants import CommandName, Style
+from app.dummydb import get_club
 from core.exceptions import IncorrectCommand
-from core.person import Person
+from app.models import Person
 from core.utils import is_integer
 
 CLUB = get_club()
@@ -48,7 +48,7 @@ class PlayCommand(Command):
             raise IncorrectCommand('В плейлисте нет трека под номером {}'.format(index))
 
         CLUB.playing = int(index)
-        # update
+        # update persons
         print(CLUB)
 
 
@@ -56,7 +56,7 @@ class StopCommand(Command):
     @staticmethod
     def __call__(*args):
         CLUB.playing = None
-        print('Музыка остановлена.', CLUB, sep='\n')
+        print(CLUB)
         # update persons
 
 

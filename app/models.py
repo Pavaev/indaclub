@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from core.constants import Style, Location
+from app.constants import Style, Location
 
 
 @dataclass(frozen=True)
