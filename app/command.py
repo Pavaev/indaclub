@@ -1,10 +1,10 @@
 import sys
 
-from core.command import Command
-from app.constants import CommandName, Style
-from app.dummydb import get_club
-from core.exceptions import IncorrectCommand
+from app.constants import CommandName
+from app.dummydb import EXISTING_STYLES, get_club
 from app.models import Person
+from core.command import Command
+from core.exceptions import IncorrectCommand
 from core.utils import is_integer
 
 CLUB = get_club()
@@ -13,9 +13,25 @@ CLUB = get_club()
 class AddPersonCommand(Command):
 
     @staticmethod
-    def __call__(name, *args):
-        print('{} пытается пройти фейс-контроль'.format(name))
-        person = Person(name=name)
+    def __call__(name, *styles):
+        accepted_styles = {}
+        name = name.capitalize()
+
+        print('{} пытается пройти фейс-контроль.'.format(name))
+        for style in styles:
+            checking_style = EXISTING_STYLES.get(style)
+            if not checking_style:
+                print('Здесь нельзя танцевать "{}"!'.format(style))
+                continue
+            accepted_styles[style] = checking_style
+
+        if not accepted_styles:
+            print('{} пришел сюда только пить.'.format(name))
+
+        person = Person(name=name, styles=accepted_styles)
+        CLUB.people.append(person)
+        CLUB.update_persons_activities(person)
+        print(CLUB)
 
 
 class StateCommand(Command):
@@ -39,16 +55,14 @@ class PlayCommand(Command):
 
         if index is None:
             CLUB.playing = 0
-            # сейчас играет
-            print(CLUB)
-            return
 
-        playlist_length = 0 if CLUB.playlist_length == 1 else CLUB.playlist_length - 1
-        if not is_integer(index, only_positive=True) or int(index) > playlist_length:
-            raise IncorrectCommand('В плейлисте нет трека под номером {}'.format(index))
+        else:
+            playlist_length = 0 if CLUB.playlist_length == 1 else CLUB.playlist_length - 1
+            if not is_integer(index, only_positive=True) or int(index) > playlist_length:
+                raise IncorrectCommand('В плейлисте нет трека под номером {}'.format(index))
+            CLUB.playing = int(index)
 
-        CLUB.playing = int(index)
-        # update persons
+        CLUB.update_persons_activities()
         print(CLUB)
 
 
@@ -56,28 +70,25 @@ class StopCommand(Command):
     @staticmethod
     def __call__(*args):
         CLUB.playing = None
+        CLUB.update_persons_activities()
         print(CLUB)
-        # update persons
 
 
 class AddSongCommand(Command):
 
     @staticmethod
     def __call__(song, *args):
-
-        try:
-            style = Style(song.lower())
-        except ValueError:
+        style = EXISTING_STYLES.get(song)
+        if not style:
             raise IncorrectCommand(
-                'Композиции в стиле {} в нашем клубе не слушают.'
+                'Композиции в стиле "{}" в нашем клубе не включают.'
                 ' У нас предпочитают: {}'.format(
                     song,
-                    ', '.join(map(lambda x: x.value.capitalize(), Style)),
+                    ', '.join(EXISTING_STYLES.keys()),
             ))
 
-        CLUB.playlist.append(style)
+        CLUB.playlist.append(song)
         print('Композиция в стиле: {} добавлена в конец плейлиста'.format(song.capitalize()), CLUB, sep='\n')
-        # сейчас играет
 
 
 class PlaylistCommand(Command):
@@ -91,10 +102,13 @@ class CommandFactory:
     __COMMANDS_MAPPING = {
         CommandName.EXIT_COMMAND: ExitCommand,
         CommandName.STATE_COMMAND: StateCommand,
+
         CommandName.PLAY_COMMAND: PlayCommand,
         CommandName.ADD_SONG_COMMAND: AddSongCommand,
         CommandName.PLAYLIST_COMMAND: PlaylistCommand,
         CommandName.STOP_COMMAND: StopCommand,
+
+        CommandName.ADD_PERSON_COMMAND: AddPersonCommand,
     }
 
     @classmethod

@@ -1,20 +1,18 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import Dict
 
-from app.constants import Style, Location
+from app.constants import Activity, StyleType
 
 
 @dataclass(frozen=True)
+class Style:
+    name: str
+    styletype: StyleType
+    dance_description: str
+
+
+@dataclass
 class Person:
     name: str
-    location: Location
-    # skills: List[Skill] = field(default_factory=list)
-
-    def __post_init__(self):
-        pass
-
-
-@dataclass(frozen=True)
-class Skill:
-    name: str
-    style: Style
+    styles: Dict[str, Style] = field(default_factory=dict)
+    activity: Activity = field(default=None)
