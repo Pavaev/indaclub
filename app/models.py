@@ -7,7 +7,7 @@ from app.constants import Activity, StyleType
 @dataclass(frozen=True)
 class Style:
     name: str
-    styletype: StyleType
+    style_type: StyleType
     dance_description: str
 
 

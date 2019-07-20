@@ -6,27 +6,27 @@ from core.dummydb import Singleton
 EXISTING_STYLES = {
     'hip-hop': Style(
         name='hip-hop',
-        styletype=StyleType.RNB,
+        style_type=StyleType.RNB,
         dance_description='покачивания телом вперед и назад, ноги в полу-присяде, руки согнуты в локтях, головой вперед-назад',
     ),
     'rnb': Style(
         name='rnb',
-        styletype=StyleType.RNB,
+        style_type=StyleType.RNB,
         dance_description='покачивания телом вперед и назад, ноги в полу-присяде, руки согнуты в локтях, головой вперед-назад',
     ),
     'electrodance': Style(
         name='electrodance',
-        styletype=StyleType.ELECTROHOUSE,
+        style_type=StyleType.ELECTROHOUSE,
         dance_description='покачивание туловищем вперед-назад, почти нет движения головой, круговые движения - вращения руками, ноги двигаются в ритме',
     ),
     'house': Style(
         name='house',
-        styletype=StyleType.ELECTROHOUSE,
+        style_type=StyleType.ELECTROHOUSE,
         dance_description='покачивание туловищем вперед-назад, почти нет движения головой, круговые движения - вращения руками, ноги двигаются в ритме',
     ),
     'pop': Style(
         name='pop',
-        styletype=StyleType.POP,
+        style_type=StyleType.POP,
         dance_description='плавные движения туловищем, руками, ногами и головой'
     ),
 }
